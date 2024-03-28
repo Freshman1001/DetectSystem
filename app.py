@@ -1,5 +1,5 @@
 # 导入Flask 模板
-from flask import Flask,render_template,request,redirect
+from flask import Flask, render_template, request, redirect
 # 导入要用到的数据库 第三方库
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
@@ -18,8 +18,10 @@ PASSWORD = "cora1234"
 # MySQL上创建的数据库名称
 DATABASE = "detector"
 # 通过修改以下代码来操作不同的SQL比写原生SQL简单很多 --》通过ORM可以实现从底层更改使用的SQL
-app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{USERNAME}:{PASSWORD}@{HOSTNAME}:{PORT}/{DATABASE}?charset=utf8mb4"
+app.config[
+    'SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{USERNAME}:{PASSWORD}@{HOSTNAME}:{PORT}/{DATABASE}?charset=utf8mb4"
 db = SQLAlchemy(app)
+
 
 # 定义模型类user
 class User(db.Model):
@@ -34,6 +36,7 @@ class User(db.Model):
     # id = db.Column(db.Integer, primary_key=True, comment="用户id")
     # password = db.Column(db.String(20), nullable=False, comment="用户密码")
 
+
 # 定义模型类video
 class Video(db.Model):
     __tablename__ = "videos"
@@ -46,10 +49,12 @@ class Video(db.Model):
     def __repr__(self):
         return f"<Video id={self.id}, v_class={self.v_class}>"
 
+
 # 查询用户
 def get_user_by_id(user_id):
     with app.app_context():
         return User.query.filter_by(user_id=user_id).first()
+
 
 # 添加用户
 def add_user(username, password):
@@ -57,6 +62,7 @@ def add_user(username, password):
         new_user = User(user_name=username, password=password)
         db.session.add(new_user)
         db.session.commit()
+
 
 # 删除用户
 def delete_user(user_id):
@@ -66,6 +72,7 @@ def delete_user(user_id):
             db.session.delete(user)
             db.session.commit()
 
+
 # 修改用户密码
 def update_user_password(user_id, new_password):
     with app.app_context():
@@ -74,12 +81,14 @@ def update_user_password(user_id, new_password):
             user.password = new_password
             db.session.commit()
 
+
 # 添加视频
 def add_video(v_class, description, v_time, video_path):
     with app.app_context():
         new_video = Video(v_class=v_class, description=description, v_time=v_time, video_path=video_path)
         db.session.add(new_video)
         db.session.commit()
+
 
 # 删除视频
 def delete_video(video_id):
@@ -88,6 +97,7 @@ def delete_video(video_id):
         if video:
             db.session.delete(video)
             db.session.commit()
+
 
 # 修改视频信息
 def update_video(video_id, new_v_class, new_description, new_v_time, new_video_path):
@@ -100,15 +110,18 @@ def update_video(video_id, new_v_class, new_description, new_v_time, new_video_p
             video.video_path = new_video_path
             db.session.commit()
 
+
 # 根据视频ID查询视频信息
 def get_video_by_id(video_id):
     with app.app_context():
         return Video.query.get(video_id)
 
+
 # 根据视频分类查询视频信息
 def get_videos_by_class(v_class):
     with app.app_context():
         return Video.query.filter_by(v_class=v_class).all()
+
 
 # 查询所有视频信息
 def get_all_videos():
@@ -121,7 +134,7 @@ def get_all_videos():
 # with app.app_context():
 #     db.create_all()
 
-#登录的路由
+# 登录的路由
 @app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == 'POST':
@@ -133,7 +146,7 @@ def login():
     return render_template('login.html')
 
 
-#登录成功后返回index
+# 登录成功后返回index
 @app.route('/index')
 def admin():
     return render_template('index.html')
@@ -171,8 +184,3 @@ if __name__ == '__main__':
     # update_user_password(2, 'new_password')
     # user2 = get_user_by_id(2)
     # print(user2)
-
-
-
-
-
