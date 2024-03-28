@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query Results</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="table-container">
+        <table class="el-table">
+            <thead>
+            <tr>
+                <th>名称</th>
+                <th>日期</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="video in videos" :key="video.id">
+                <td>{{ video.name }}</td>
+                <td>{{ video.date }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            videos: []
+        },
+        created() {
+            this.fetchData();
+        },
+        methods: {
+            fetchData() {
+                fetch('/query_results', {
+                    method: 'GET'
+                }).then(function(response) {
+                    return response.json();
+                }).then(function(data) {
+                    if (data.success) {
+                        this.videos = data.videos;
+                    } else {
+                        console.error('Query failed:', data.message);
+                    }
+                }.bind(this)).catch(function(error) {
+                    console.error('Error:', error);
+                });
+            }
+        }
+    });
+</script>
+</body>
+</html>

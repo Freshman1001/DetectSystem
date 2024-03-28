@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>核工业设备缺陷检测结果处理系统</title>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <style>
+    .home-container {
+      text-align: center;
+      padding: 40px;
+    }
+
+    .home-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-top: 50px;
+    }
+
+    .upload-section {
+      width: 40%;
+      float: left;
+      padding: 20px;
+      border: 1px dashed #ccc;
+      text-align: center;
+    }
+
+    .query-section {
+      width: 40%;
+      height: 100%;
+      float: right;
+      padding: 20px;
+      border: 1px dashed #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="home-container">
+    <h1 class="home-title">基于深度学习的核工业设备缺陷检测结果处理系统</h1>
+    <div class="upload-section">
+      <input type="file" id="file-input" style="display: none;">
+      <button id="upload-button" class="el-button el-button--primary" style="width: 80%; margin: 10px;">点击上传文件</button>
+      <input type="datetime-local" id="date-input" placeholder="选择日期和时间" style="width: 80%; margin: 10px;">
+      <input type="text" id="location-input" placeholder="地点" style="width: 80%; margin: 10px;">
+      <input type="text" id="remark-input" placeholder="备注" style="width: 80%; margin: 10px;">
+      <button id="submit-button" class="el-button el-button--primary" style="width: 30%; margin: 10px;">提交</button>
+    </div>
+    <div class="query-section">
+      <input type="datetime-local" id="start-date-input" placeholder="开始日期" style="width: 80%; margin: 10px;">
+      <input type="datetime-local" id="end-date-input" placeholder="结束日期" style="width: 80%; margin: 10px;">
+      <input type="text" id="query-location-remark-input" placeholder="地点/备注" style="width: 80%; margin: 10px;">
+      <button id="query-button" class="el-button el-button--primary" style="width: 30%; margin: 10px;">查询处理结果</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById("upload-button").addEventListener("click", function() {
+        document.getElementById("file-input").click();
+      });
+
+      document.getElementById("submit-button").addEventListener("click", function() {
+          var date = document.getElementById("date-input").value;
+          var location = document.getElementById("location-input").value;
+          var remark = document.getElementById("remark-input").value;
+
+          var formData = new FormData();
+          formData.append('class', 'your_class_value');
+          formData.append('description', 'your_description_value');
+          formData.append('time', date);
+          formData.append('video_path', 'your_video_path_value');
+
+          fetch('/submit_video', {
+              method: 'POST',
+              body: formData
+          }).then(function(response) {
+              return response.json();
+          }).then(function(data) {
+              if (data.success) {
+                  alert('提交成功');
+              } else {
+                  alert('提交失败: ' + data.message);
+              }
+          }).catch(function(error) {
+              console.error('Error:', error);
+          });
+      });
+
+      document.getElementById("query-button").addEventListener("click", function() {
+          var startDate = document.getElementById("start-date-input").value;
+          var endDate = document.getElementById("end-date-input").value;
+          var locationRemark = document.getElementById("query-location-remark-input").value;
+
+          // 构造查询参数
+          var queryParams = "?start_date=" + encodeURIComponent(startDate) + "&end_date=" + encodeURIComponent(endDate) + "&location_remark=" + encodeURIComponent(locationRemark);
+
+          // 发送 GET 请求给后端查询处理结果
+          fetch('/query_results' + queryParams, {
+              method: 'GET'
+          }).then(function(response) {
+              return response.json();
+          }).then(function(data) {
+              // 处理查询结果，这里假设根据后端返回的数据做相应处理
+              if (data.success) {
+                  // 处理查询结果，例如更新页面显示等
+                  console.log(data.videos);
+              } else {
+                  alert('查询失败: ' + data.message);
+              }
+          }).catch(function(error) {
+              console.error('Error:', error);
+          });
+      });
+
+    });
+  </script>
+</body>
+</html>
+

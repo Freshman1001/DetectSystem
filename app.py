@@ -1,5 +1,5 @@
 # 导入Flask 模板
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify, url_for
 # 导入要用到的数据库 第三方库
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
@@ -134,23 +134,27 @@ def get_all_videos():
 # with app.app_context():
 #     db.create_all()
 
-# 登录的路由
-@app.route('/login', methods=["GET", "POST"])
-def login():
-    if request.method == 'POST':
-        id = request.form.get('name')
-        pwd = request.form.get('password')
-        a = User.query.filter_by(id=int(id)).first()
-        if a.password == pwd and int(id) == a.id:
-            return redirect('index')
-    return render_template('login.html')
+# # 登录的路由
+# @app.route('/login', methods=["GET", "POST"])
+# def login():
+#     if request.method == 'POST':
+#         id = request.form.get('name')
+#         pwd = request.form.get('password')
+#         a = User.query.filter_by(id=int(id)).first()
+#         if a.password == pwd and int(id) == a.id:
+#             return redirect('index')
+#     return render_template('login.html')
 
 
 # 登录成功后返回index
-@app.route('/index')
+@app.route('/')
 def admin():
     return render_template('index.html')
 
+
+# 处理提交视频文件，返回提交是否成功
+
+# 查询处理逻辑
 
 if __name__ == '__main__':
     app.run()
