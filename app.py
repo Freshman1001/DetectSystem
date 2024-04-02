@@ -31,7 +31,6 @@ def query_videos(start_date, end_date, location_remark):
     # 在这里执行查询操作，根据传入的参数查询相关视频信息
     # 这里假设 get_videos_by_date_range是你自定义的查询函数
     videos = db_option.get_videos_by_date_range(start_date, end_date)
-    print(videos)
     return videos
 
 # 定义路由，处理查询请求和渲染查询结果页面
@@ -46,7 +45,6 @@ def query_results():
     if start_date and end_date:
         # 执行查询操作，并获取查询结果
         videos = query_videos(start_date, end_date, location_remark)
-        print(videos)
         # 返回查询结果给前端页面
         return render_template('result.html', videos=videos)
     else:

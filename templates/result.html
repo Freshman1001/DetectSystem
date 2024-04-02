@@ -18,7 +18,6 @@
         {% for video in videos %}
             <video width="320" height="240" controls>
                 <source src="{{ video.v_path }}" type="video/mp4">
-                Your browser does not support the video tag.
             </video>
             <p><strong>Class:</strong> {{ video.v_class }}</p>
             <p><strong>Time:</strong> {{ video.v_time }}</p>
@@ -49,9 +48,7 @@
             return response.json();
         }).then(function(data) {
             if (data.success) {
-                // 将后端返回的视频数据赋值给前端的 videos 对象
                 window.videos = data.videos;
-                // 在控制台输出一下 videos 对象，确保数据正确
                 console.log(videos);
             } else {
                 alert('查询失败: ' + data.message);
