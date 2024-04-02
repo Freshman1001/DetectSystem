@@ -1,3 +1,10 @@
+<!--
+  本网页内容受版权保护。
+  版权所有 (C) 2024 陈德宏/四川大学。
+  未经授权，禁止复制或传播本网页内容。
+-->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,30 +96,31 @@
       });
 
       document.getElementById("query-button").addEventListener("click", function() {
-          var startDate = document.getElementById("start-date-input").value;
-          var endDate = document.getElementById("end-date-input").value;
+          var startDateInput = document.getElementById("start-date-input");
+          var endDateInput = document.getElementById("end-date-input");
+          var startDate = startDateInput.value.split("T")[0];
+          var endDate = endDateInput.value.split("T")[0];
           var locationRemark = document.getElementById("query-location-remark-input").value;
 
-          // 构造查询参数
           var queryParams = "?start_date=" + encodeURIComponent(startDate) + "&end_date=" + encodeURIComponent(endDate) + "&location_remark=" + encodeURIComponent(locationRemark);
 
-          // 发送 GET 请求给后端查询处理结果
           fetch('/query_results' + queryParams, {
               method: 'GET'
-          }).then(function(response) {
-              return response.json();
-          }).then(function(data) {
-              // 处理查询结果，这里假设根据后端返回的数据做相应处理
-              if (data.success) {
-                  // 处理查询结果，例如更新页面显示等
-                  console.log(data.videos);
+          })
+          .then(function(response) {
+              if (response.ok) {
+                  window.location.href = '/query_results' + queryParams;
               } else {
-                  alert('查询失败: ' + data.message);
+                  console.error('Error:', response.statusText);
+                  alert('查询处理结果失败');
               }
-          }).catch(function(error) {
+          })
+          .catch(function(error) {
               console.error('Error:', error);
+              alert('查询处理结果失败');
           });
       });
+
 
     });
   </script>

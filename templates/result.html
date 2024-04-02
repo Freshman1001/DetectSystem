@@ -1,0 +1,65 @@
+<!--
+  本网页内容受版权保护。
+  版权所有 (C) 2024 陈德宏/四川大学。
+  未经授权，禁止复制或传播本网页内容。
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Result</title>
+</head>
+<body>
+    <h1>Video Result</h1>
+    {% if videos %}
+        {% for video in videos %}
+            <video width="320" height="240" controls>
+                <source src="{{ video.v_path }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <p><strong>Class:</strong> {{ video.v_class }}</p>
+            <p><strong>Time:</strong> {{ video.v_time }}</p>
+            <p><strong>Location:</strong> {{ video.v_location }}</p>
+            <p><strong>Region:</strong> {{ video.nv_region }}</p>
+            <p><strong>Description:</strong> {{ video.description }}</p>
+            <hr>
+        {% endfor %}
+    {% else %}
+        <p>No videos found.</p>
+    {% endif %}
+</body>
+</html>
+
+
+<script>
+   document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("query-button").addEventListener("click", function() {
+        var startDate = document.getElementById("start-date-input").value.split("T")[0];
+        var endDate = document.getElementById("end-date-input").value.split("T")[0];
+        var locationRemark = document.getElementById("query-location-remark-input").value;
+
+        var queryParams = "?start_date=" + encodeURIComponent(startDate) + "&end_date=" + encodeURIComponent(endDate) + "&location_remark=" + encodeURIComponent(locationRemark);
+
+        fetch('/query_results' + queryParams, {
+            method: 'GET'
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            if (data.success) {
+                // 将后端返回的视频数据赋值给前端的 videos 对象
+                window.videos = data.videos;
+                // 在控制台输出一下 videos 对象，确保数据正确
+                console.log(videos);
+            } else {
+                alert('查询失败: ' + data.message);
+            }
+        }).catch(function(error) {
+            console.error('Error:', error);
+        });
+    });
+});
+
+</script>
