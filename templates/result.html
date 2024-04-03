@@ -7,31 +7,84 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Result</title>
-</head>
-<body>
-    <h1>Video Result</h1>
-    {% if videos %}
-        {% for video in videos %}
-            <video width="320" height="240" controls>
-                <source src="{{ video.v_path }}" type="video/mp4">
-            </video>
-            <p><strong>Class:</strong> {{ video.v_class }}</p>
-            <p><strong>Time:</strong> {{ video.v_time }}</p>
-            <p><strong>Location:</strong> {{ video.v_location }}</p>
-            <p><strong>Region:</strong> {{ video.nv_region }}</p>
-            <p><strong>Description:</strong> {{ video.description }}</p>
-            <hr>
-        {% endfor %}
-    {% else %}
-        <p>No videos found.</p>
-    {% endif %}
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>视频查询结果</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f3f3f3;
+            }
+    
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+    
+            h1 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+    
+            .video-item {
+                margin-bottom: 30px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 10px;
+                background-color: #fff;
+            }
+    
+            .video-info {
+                margin-top: 10px;
+            }
+    
+            video {
+                width: 100%;
+                border-radius: 8px;
+            }
+    
+            p {
+                margin: 5px 0;
+            }
+    
+            hr {
+                border: none;
+                border-top: 1px solid #ddd;
+                margin: 20px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>视频查询结果</h1>
+            {% if videos %}
+                {% for video in videos %}
+                    <div class="video-item">
+                        <video controls>
+                            <source src="{{ video.v_path }}" type="video/mp4">
+                        </video>
+                        <div class="video-info">
+                            <p><strong>分类：</strong> {{ video.v_class }}</p>
+                            <p><strong>时间：</strong> {{ video.v_time }}</p>
+                            <p><strong>地点：</strong> {{ video.v_location }}</p>
+                            <p><strong>区域：</strong> {{ video.nv_region }}</p>
+                            <p><strong>描述：</strong> {{ video.description }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>未找到视频。</p>
+            {% endif %}
+        </div>
+    </body>
 </html>
-
 
 <script>
    document.addEventListener("DOMContentLoaded", function() {
