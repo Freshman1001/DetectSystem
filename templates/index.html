@@ -68,31 +68,37 @@
         document.getElementById("file-input").click();
       });
 
+      document.getElementById("file-input").addEventListener("change", function() {
+        alert('文件已提交');
+      });
+  
       document.getElementById("submit-button").addEventListener("click", function() {
-          var date = document.getElementById("date-input").value;
-          var location = document.getElementById("location-input").value;
-          var remark = document.getElementById("remark-input").value;
-
-          var formData = new FormData();
-          formData.append('class', 'your_class_value');
-          formData.append('description', 'your_description_value');
-          formData.append('time', date);
-          formData.append('video_path', 'your_video_path_value');
-
-          fetch('/submit_video', {
-              method: 'POST',
-              body: formData
-          }).then(function(response) {
-              return response.json();
-          }).then(function(data) {
-              if (data.success) {
-                  alert('提交成功');
-              } else {
-                  alert('提交失败: ' + data.message);
-              }
-          }).catch(function(error) {
-              console.error('Error:', error);
-          });
+        var date = document.getElementById("date-input").value;
+        var location = document.getElementById("location-input").value;
+        var remark = document.getElementById("remark-input").value;
+        var fileInput = document.getElementById("file-input").files[0];
+        var filePath = '/static/' + fileInput.name;
+        var formData = new FormData();
+        formData.append('date', date);
+        formData.append('location', location);
+        formData.append('remark', remark);
+        formData.append('file', fileInput);
+        formData.append('filePath', filePath);
+  
+        fetch('/submit_video', {
+          method: 'POST',
+          body: formData
+        }).then(function(response) {
+          return response.json();
+        }).then(function(data) {
+          if (data.success) {
+            alert('提交成功');
+          } else {
+            alert('提交失败: ' + data.message);
+          }
+        }).catch(function(error) {
+          console.error('Error:', error);
+        });
       });
 
       document.getElementById("query-button").addEventListener("click", function() {
