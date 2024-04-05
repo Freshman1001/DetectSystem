@@ -4,6 +4,7 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for
 # 导入要用到的数据库 第三方库
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
 from datetime import datetime
 
 app = Flask(__name__)
@@ -14,9 +15,9 @@ HOSTNAME = "127.0.0.1"
 # MySQL监听的端口号，默认3306
 PORT = 3306
 # 连接MySQL的用户名，自己设置
-USERNAME = "root"
+USERNAME = ""
 # 连接MySQL的密码，自己设置
-PASSWORD = "123456"
+PASSWORD = ""
 # MySQL上创建的数据库名称
 DATABASE = "detector"
 # 通过修改以下代码来操作不同的SQL比写原生SQL简单很多 --》通过ORM可以实现从底层更改使用的SQL
@@ -90,7 +91,8 @@ def update_user_password(user_id, new_password):
 # 添加视频
 def add_video(v_path, v_class, v_time, v_location, v_region, description):
     with app.app_context():
-        new_video = Video(v_path=v_path, v_class=v_class, v_time=v_time, v_location=v_location, v_region=v_region, description=description)
+        new_video = Video(v_path=v_path, v_class=v_class, v_time=v_time,
+                          v_location=v_location, v_region=v_region, description=description)
         db.session.add(new_video)
         db.session.commit()
 
@@ -118,11 +120,18 @@ def update_video(video_id, new_v_path, new_v_class, new_v_time, new_v_location, 
             db.session.commit()
 
 # 根据视频存储时间查询视频信息
-def get_videos_by_date_range(start_time, end_time):
+def get_videos_by_date_range(start_date, end_date):
     with app.app_context():
-        start_datetime = datetime.strptime(start_time, '%Y-%m-%d')
-        end_datetime = datetime.strptime(end_time, '%Y-%m-%d')
-        return Video.query.filter(Video.v_time.between(start_datetime, end_datetime)).all()
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        return Video.query.filter(Video.v_time.between(start_date, end_date)).all()
+
+def get_videos_by_date_range_and_others(start_date, end_date,region_remark):
+    with app.app_context():
+        start_datetime = datetime.strptime(start_date, '%Y-%m-%d')
+        end_datetime = datetime.strptime(end_date, '%Y-%m-%d')
+        return Video.query.filter(Video.v_time.between(start_datetime, end_datetime),
+                                  or_(Video.v_region == region_remark, Video.description == region_remark)).all()
 
 # 根据视频ID查询视频信息
 def get_video_by_id(video_id):
