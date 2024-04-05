@@ -27,10 +27,13 @@ def admin():
 
 
 # 查询函数，根据日期范围和地点/备注查询视频信息
-def query_videos(start_date, end_date, location_remark):
+def query_videos(start_date, end_date, region_remark):
     # 在这里执行查询操作，根据传入的参数查询相关视频信息
     # 这里假设 get_videos_by_date_range是你自定义的查询函数
-    videos = db_option.get_videos_by_date_range(start_date, end_date)
+    if not region_remark:
+        videos = db_option.get_videos_by_date_range(start_date, end_date)
+    else:
+        videos = db_option.get_videos_by_date_range_and_others(start_date, end_date, region_remark)
     return videos
 
 # 定义路由，处理查询请求和渲染查询结果页面
@@ -58,8 +61,8 @@ if __name__ == '__main__':
     app.run()
 
     # # 添加视频
-    # db_option.add_video('D:\Demo\\flask\\videos\\test1.mp4', 'class1', '2024-03-29', '坐标(1,1)', 'A区', 'description1')
-    # db_option.add_video('D:\Demo\\flask\\videos\\test2.mp4', 'class2', '2023-09-12', '坐标(10,300)', 'B区', 'description2')
+    # db_option.add_video('D:\Demo\\DetectSystem\\static\\test1.mp4', 'class1', '2024-03-29', '坐标(1,1)', 'A区', 'description11')
+    # db_option.add_video('D:\Demo\\DetectSystem\\static\\test2.mp4', 'class2', '2023-09-12', '坐标(10,300)', 'B区', 'description22')
     # # # 删除视频
     # # delete_video(1)
     # # video1 = db_option.get_video_by_id(2)
