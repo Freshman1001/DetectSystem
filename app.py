@@ -131,7 +131,6 @@ def submit_video():
             vd.description = request.form.get('remark')
 
             try:
-                # 将视频实例添加到数据库中
                 db.session.add(vd)
                 db.session.commit()
             except Exception as e:

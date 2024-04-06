@@ -60,8 +60,8 @@
         查询开始日期：<input type="date" id="start-date-input" placeholder="开始日期" style="width: 50%; margin: 10px;" onchange="checkDate('start')">
       </div>
       <div>
-        查询结束日期：<input type="date" id="end-date-input" placeholder="结束日期" style="width: 50%; margin: 10px;" onchange="checkDate('end')">      
-      </div?
+        查询结束日期：<input type="date" id="end-date-input" placeholder="结束日期" style="width: 50%; margin: 10px;" onchange="checkDate('end')"> 
+      </div>
       <input type="text" id="query-location-remark-input" placeholder="区域/备注" style="width: 80%; margin: 10px;">
       <button id="query-button" class="el-button el-button--primary" style="width: 30%; margin: 10px;">查询处理结果</button>
     </div>
@@ -86,14 +86,14 @@
       } else {
           selectedDate = document.getElementById("end-date-input").value;
       }
-      var currentDate = new Date().toISOString().slice(0, 10); // 获取当前日期，不包括时分秒
+      var currentDate = new Date().toISOString().slice(0, 10);
   
       if (selectedDate > currentDate) {
           alert("请选择当前日期或以前的日期！");
           if (type === 'start') {
-              document.getElementById("start-date-input").value = ""; // 将开始日期的值设置为空
+              document.getElementById("start-date-input").value = "";
           } else {
-              document.getElementById("end-date-input").value = ""; // 将结束日期的值设置为空
+              document.getElementById("end-date-input").value = "";
           }
       }
     }
@@ -124,7 +124,7 @@
         formData.append('date', date);
         formData.append('location', region);
         formData.append('remark', remark);
-        formData.append('files', fileList); // 更正为将文件列表添加到formData中
+        formData.append('files', fileList);
       
         fetch('/submit_video', {
           method: 'POST',
