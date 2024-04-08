@@ -47,22 +47,58 @@
   <div id="app" class="home-container">
     <h1 class="home-title">基于深度学习的核工业设备缺陷检测结果处理系统</h1>
     <div class="upload-section">
-      <input type="file" id="file-input" style="display: none;">
-      <button id="upload-button" class="el-button el-button--primary" style="width: 80%; margin: 10px;">点击上传文件</button>
-      <input type="datetime-local" id="date-input" placeholder="选择日期和时间" style="width: 80%; margin: 10px;">
-      <input type="text" id="location-input" placeholder="地点" style="width: 80%; margin: 10px;">
+      <input type="file" id="file-input" multiple style="display: none;">
+      <button id="upload-button" class="el-button el-button--primary" style="width: 80%; margin: 10px;">点击批量上传文件</button>
+      <input type="date" id="date-input" placeholder="选择日期和时间" style="width: 80%; margin: 10px;" onchange="checkDate1()">
+      <input type="text" id="location-input" placeholder="区域" style="width: 80%; margin: 10px;">
       <input type="text" id="remark-input" placeholder="备注" style="width: 80%; margin: 10px;">
       <button id="submit-button" class="el-button el-button--primary" style="width: 30%; margin: 10px;">提交</button>
     </div>
+
     <div class="query-section">
-      <input type="datetime-local" id="start-date-input" placeholder="开始日期" style="width: 80%; margin: 10px;">
-      <input type="datetime-local" id="end-date-input" placeholder="结束日期" style="width: 80%; margin: 10px;">
-      <input type="text" id="query-location-remark-input" placeholder="地点/备注" style="width: 80%; margin: 10px;">
+      <div>
+        查询开始日期：<input type="date" id="start-date-input" placeholder="开始日期" style="width: 50%; margin: 10px;" onchange="checkDate('start')">
+      </div>
+      <div>
+        查询结束日期：<input type="date" id="end-date-input" placeholder="结束日期" style="width: 50%; margin: 10px;" onchange="checkDate('end')"> 
+      </div>
+      <input type="text" id="query-location-remark-input" placeholder="区域/备注" style="width: 80%; margin: 10px;">
       <button id="query-button" class="el-button el-button--primary" style="width: 30%; margin: 10px;">查询处理结果</button>
     </div>
   </div>
 
   <script>
+    function checkDate1() {
+      var selectedDate = document.getElementById("date-input").value;
+      var currentDate = new Date().toISOString().slice(0, 16);
+      if (selectedDate > currentDate) {
+          alert("请选择当前时间或以前的时间！");
+          document.getElementById("date-input").value = "";
+      }
+    }
+
+
+
+    function checkDate(type) {
+      var selectedDate;
+      if (type === 'start') {
+          selectedDate = document.getElementById("start-date-input").value;
+      } else {
+          selectedDate = document.getElementById("end-date-input").value;
+      }
+      var currentDate = new Date().toISOString().slice(0, 10);
+  
+      if (selectedDate > currentDate) {
+          alert("请选择当前日期或以前的日期！");
+          if (type === 'start') {
+              document.getElementById("start-date-input").value = "";
+          } else {
+              document.getElementById("end-date-input").value = "";
+          }
+      }
+    }
+  
+  
     document.addEventListener("DOMContentLoaded", function() {
       document.getElementById("upload-button").addEventListener("click", function() {
         document.getElementById("file-input").click();
@@ -74,32 +110,39 @@
   
       document.getElementById("submit-button").addEventListener("click", function() {
         var date = document.getElementById("date-input").value;
-        var location = document.getElementById("location-input").value;
+        var region = document.getElementById("location-input").value;
         var remark = document.getElementById("remark-input").value;
-        var fileInput = document.getElementById("file-input").files[0];
-        var filePath = '/static/' + fileInput.name;
+        var fileInputs = document.getElementById("file-input").files;
+        var fileList = [];
         var formData = new FormData();
+    
+        for (var i = 0; i < fileInputs.length; i++) {
+            var fileInput = fileInputs[i];
+            fileList.push(fileInput);
+        }
+      
         formData.append('date', date);
-        formData.append('location', location);
+        formData.append('location', region);
         formData.append('remark', remark);
-        formData.append('file', fileInput);
-        formData.append('filePath', filePath);
-  
+        formData.append('files', fileList);
+      
         fetch('/submit_video', {
           method: 'POST',
           body: formData
         }).then(function(response) {
           return response.json();
         }).then(function(data) {
+          console.log(data)
           if (data.success) {
             alert('提交成功');
           } else {
-            alert('提交失败: ' + data.message);
+            alert('提交操作完成');
           }
         }).catch(function(error) {
           console.error('Error:', error);
         });
-      });
+    });
+    
 
       document.getElementById("query-button").addEventListener("click", function() {
           var startDateInput = document.getElementById("start-date-input");
