@@ -2,9 +2,13 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for
 import db_option
 from db_option import db,Video,app
-from datetime import datetime
+
 import hashlib
 import pathlib
+from flask import Flask, request
+from werkzeug.utils import secure_filename
+import os
+
 
 app.config["UPLOAD_FOLDER"] = "static"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -45,107 +49,107 @@ def query_videos(start_date, end_date, region_remark):
 def query_results():
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
-    location_remark = request.args.get('location_remark')
+    region_remark = request.args.get('region_remark')
     print(start_date)
     print(end_date)
 
     if start_date and end_date:
         # 执行查询操作，并获取查询结果
-        videos = query_videos(start_date, end_date, location_remark)
+        videos = query_videos(start_date, end_date, region_remark)
         # 返回查询结果给前端页面
         return render_template('result.html', videos=videos)
     else:
         return jsonify({'success': False, 'message': 'Missing query parameters'})
 
 
-
+#
+# @app.post('/submit_video')
+# def submit_video():
+#     files = request.files.getlist("files")
+#     if files:
+#         for file in files:
+#             """接收并保存视频文件"""
+#             filename = file.filename
+#             # 读取视频内容
+#             content = file.read()
+#             # 获取视频的 md5 值
+#             hex_name = hashlib.md5(content).hexdigest()
+#             # 获取文件后缀
+#             suffix = pathlib.Path(filename).suffix
+#             # 拼接新的名字 hex + 原有后缀
+#             new_filename = hex_name + suffix
+#             print('new_filename', new_filename)
+#             upload_dir = pathlib.Path(app.config["UPLOAD_FOLDER"])
+#             # 获取写入地址
+#             new_path = upload_dir.joinpath(new_filename)
+#             # 写入文件
+#             open(new_path, mode="wb").write(content)
+#
+#             vd = Video()
+#             vd.v_path = str(new_path)  # 将路径转换为字符串
+#             vd.v_class = request.form.get('class')
+#             # 记录时间
+#             vd.v_time = request.form.get('date')
+#
+#             vd.v_region = request.form.get('region')
+#             vd.description = request.form.get('remark')
+#
+#             try:
+#                 db.session.add(vd)
+#                 db.session.commit()
+#             except Exception as e:
+#                 print("数据库操作错误:", e)
+#                 db.session.rollback()
+#                 return {"code": 1, "msg": "上传视频失败，请稍后再试"}
+#     return {"code": 0, "msg": "成功"}
 @app.post('/submit_video')
 def submit_video():
-    # file = request.files.get("file")
-    # if file:
-    #     """接收并保存视频文件"""
-    #     filename = file.filename
-    #     # 读取视频内容
-    #     content = file.read()
-    #     # 获取视频的 md5 值
-    #     hex_name = hashlib.md5(content).hexdigest()
-    #     # 获取文件后缀
-    #     suffix = pathlib.Path(filename).suffix
-    #     # 拼接新的名字 hex + 原有后缀
-    #     new_filename = hex_name + suffix
-    #     print('new_filename',new_filename)
-    #     upload_dir = pathlib.Path(app.config["UPLOAD_FOLDER"])
-    #     # 获取写入地址
-    #     new_path = upload_dir.joinpath(new_filename)
-    #     # 写入文件
-    #     open(new_path, mode="wb").write(content)
-    #
-    #     vd = Video()
-    #     vd.v_path = str(new_path)  # 将路径转换为字符串
-    #     vd.v_class = request.form.get('class')
-    #     # 验证时间数据是否存在，以及格式是否正确
-    #     vd.v_time = request.form.get('date')
-    #     vd.v_region = request.form.get('location')
-    #     vd.description = request.form.get('remark')
-    #
-    #     try:
-    #         # 将视频实例添加到数据库中
-    #         db.session.add(vd)
-    #         db.session.commit()
-    #         return {"code": 0, "msg": "上传视频成功"}
-    #     except Exception as e:
-    #         print("数据库操作错误:", e)
-    #         db.session.rollback()
-    #         return {"code": 1, "msg": "上传视频失败，请稍后再试"}
-    files = request.files.getlist("files")
+    date = request.form.get('date')
+    region = request.form.get('region')
+    remark = request.form.get('remark')
+    print(date)
+    files = request.form.getlist("files")
+    print(files)
     if files:
+        print(files)
         for file in files:
-            """接收并保存视频文件"""
-            filename = file.filename
-            # 读取视频内容
-            content = file.read()
-            # 获取视频的 md5 值
-            hex_name = hashlib.md5(content).hexdigest()
-            # 获取文件后缀
-            suffix = pathlib.Path(filename).suffix
-            # 拼接新的名字 hex + 原有后缀
-            new_filename = hex_name + suffix
-            print('new_filename', new_filename)
-            upload_dir = pathlib.Path(app.config["UPLOAD_FOLDER"])
-            # 获取写入地址
-            new_path = upload_dir.joinpath(new_filename)
-            # 写入文件
-            open(new_path, mode="wb").write(content)
+            if file:
+                filename = secure_filename(file.filename)
+                file_content = file.read()
+                file_hash = hashlib.md5(file_content).hexdigest()
 
-            vd = Video()
-            vd.v_path = str(new_path)  # 将路径转换为字符串
-            vd.v_class = request.form.get('class')
-            # 验证时间数据是否存在，以及格式是否正确
-            date_str = request.form.get('date')
-            try:
-                vd.v_time = datetime.datetime.strptime(date_str, '%Y-%m-%d')
-            except ValueError:
-                return {"code": 1, "msg": "时间格式错误，必须为年-月-日格式（例如：2024-03-29）"}
+                # 保存文件到服务器
+                new_filename = file_hash + '_' + filename
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
+                file.save(file_path)
 
-            vd.v_region = request.form.get('region')
-            vd.description = request.form.get('remark')
+                # 将文件信息保存到数据库
+                vd = Video()
+                vd.v_path = file_path  # 文件路径
+                vd.v_class = request.form.get('class')
+                vd.v_time = date
+                vd.v_region = region
+                vd.description = remark
+                print(vd)
+                try:
+                    db.session.add(vd)
+                    db.session.commit()
+                    print("存入数据库")
+                except Exception as e:
+                    print("数据库操作错误:", e)
+                    db.session.rollback()
+                    return {"code": 1, "msg": "上传视频失败，请稍后再试"}
 
-            try:
-                db.session.add(vd)
-                db.session.commit()
-            except Exception as e:
-                print("数据库操作错误:", e)
-                db.session.rollback()
-                return {"code": 1, "msg": "上传视频失败，请稍后再试"}
-    return {"code": 0, "msg": "成功"}
-
+        return {"code": 0, "msg": "成功"}
+    else:
+        return {"code": 1, "msg": "未收到文件"}
 
 if __name__ == '__main__':
     app.run(debug=True)
 
     # # 添加视频
-    # db_option.add_video('D:\Demo\\DetectSystem\\static\\test1.mp4', 'class1', '2024-03-29', '坐标(1,1)', 'A区', 'description11')
-    # db_option.add_video('D:\Demo\\DetectSystem\\static\\test2.mp4', 'class2', '2023-09-12', '坐标(10,300)', 'B区', 'description22')
+    # db_option.add_video('D:\Demo\\DetectSystem\\static\\test1.mp4', 'class1', '2024-03-29', '坐标(1,1)', 'A区', 'description111')
+    # db_option.add_video('D:\Demo\\DetectSystem\\static\\test2.mp4', 'class2', '2023-09-12', '坐标(10,300)', 'B区', 'description222')
     # # # 删除视频
     # # delete_video(1)
     # # video1 = db_option.get_video_by_id(2)

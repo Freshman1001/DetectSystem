@@ -50,7 +50,7 @@
       <input type="file" id="file-input" multiple style="display: none;">
       <button id="upload-button" class="el-button el-button--primary" style="width: 80%; margin: 10px;">点击批量上传文件</button>
       <input type="date" id="date-input" placeholder="选择日期和时间" style="width: 80%; margin: 10px;" onchange="checkDate1()">
-      <input type="text" id="location-input" placeholder="区域" style="width: 80%; margin: 10px;">
+      <input type="text" id="region-input" placeholder="区域" style="width: 80%; margin: 10px;">
       <input type="text" id="remark-input" placeholder="备注" style="width: 80%; margin: 10px;">
       <button id="submit-button" class="el-button el-button--primary" style="width: 30%; margin: 10px;">提交</button>
     </div>
@@ -62,7 +62,7 @@
       <div>
         查询结束日期：<input type="date" id="end-date-input" placeholder="结束日期" style="width: 50%; margin: 10px;" onchange="checkDate('end')"> 
       </div>
-      <input type="text" id="query-location-remark-input" placeholder="区域/备注" style="width: 80%; margin: 10px;">
+      <input type="text" id="query-region-remark-input" placeholder="区域/备注" style="width: 80%; margin: 10px;">
       <button id="query-button" class="el-button el-button--primary" style="width: 30%; margin: 10px;">查询处理结果</button>
     </div>
   </div>
@@ -110,7 +110,7 @@
   
       document.getElementById("submit-button").addEventListener("click", function() {
         var date = document.getElementById("date-input").value;
-        var region = document.getElementById("location-input").value;
+        var region = document.getElementById("region-input").value;
         var remark = document.getElementById("remark-input").value;
         var fileInputs = document.getElementById("file-input").files;
         var fileList = [];
@@ -122,7 +122,7 @@
         }
       
         formData.append('date', date);
-        formData.append('location', region);
+        formData.append('region', region);
         formData.append('remark', remark);
         formData.append('files', fileList);
       
@@ -149,9 +149,9 @@
           var endDateInput = document.getElementById("end-date-input");
           var startDate = startDateInput.value.split("T")[0];
           var endDate = endDateInput.value.split("T")[0];
-          var locationRemark = document.getElementById("query-location-remark-input").value;
+          var regionRemark = document.getElementById("query-region-remark-input").value;
 
-          var queryParams = "?start_date=" + encodeURIComponent(startDate) + "&end_date=" + encodeURIComponent(endDate) + "&location_remark=" + encodeURIComponent(locationRemark);
+          var queryParams = "?start_date=" + encodeURIComponent(startDate) + "&end_date=" + encodeURIComponent(endDate) + "&region_remark=" + encodeURIComponent(regionRemark);
 
           fetch('/query_results' + queryParams, {
               method: 'GET'
