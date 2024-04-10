@@ -115,6 +115,11 @@
         var remark = document.getElementById("remark-input").value;
         var fileInputs = document.getElementById("file-input").files;
         var formData = new FormData();
+
+        if (!date || !region || !remark || fileInputs.length === 0) {
+            alert('文件和时间是必填项');
+            return;
+        }
     
         formData.append('date', date);
         formData.append('region', region);
@@ -151,6 +156,11 @@
           var endDate = endDateInput.value.split("T")[0];
           var regionRemark = document.getElementById("query-region-remark-input").value;
           var v_class = document.getElementById("v_class-input").value;
+          
+          if (!startDate || !endDate || !regionRemark || !v_class) {
+            alert('请填写完整信息');
+            return;
+          }
 
           var queryParams = "?start_date=" + encodeURIComponent(startDate) + "&end_date=" + encodeURIComponent(endDate) + "&region_remark=" + encodeURIComponent(regionRemark) + "&v_class=" + encodeURIComponent(v_class);
 
