@@ -113,35 +113,35 @@
         var region = document.getElementById("region-input").value;
         var remark = document.getElementById("remark-input").value;
         var fileInputs = document.getElementById("file-input").files;
-        var fileList = [];
         var formData = new FormData();
     
-        for (var i = 0; i < fileInputs.length; i++) {
-            var fileInput = fileInputs[i];
-            fileList.push(fileInput);
-        }
-      
         formData.append('date', date);
         formData.append('region', region);
         formData.append('remark', remark);
-        formData.append('files', fileList);
       
+        for (var i = 0; i < fileInputs.length; i++) {
+            var fileInput = fileInputs[i];
+            formData.append(`files[${i}]`, fileInput);
+            formData.append(`fileInput.name${i}`, fileInput.name)
+        }
+    
         fetch('/submit_video', {
-          method: 'POST',
-          body: formData
+            method: 'POST',
+            body: formData,
         }).then(function(response) {
-          return response.json();
+            return response.json();
         }).then(function(data) {
-          console.log(data)
-          if (data.success) {
-            alert('提交成功');
-          } else {
-            alert('提交操作完成');
-          }
+            console.log(data)
+            if (data.success) {
+                alert('提交成功');
+            } else {
+                alert('提交操作完成');
+            }
         }).catch(function(error) {
-          console.error('Error:', error);
+            console.error('Error:', error);
         });
     });
+    
     
 
       document.getElementById("query-button").addEventListener("click", function() {
