@@ -63,6 +63,7 @@
         查询结束日期：<input type="date" id="end-date-input" placeholder="结束日期" style="width: 50%; margin: 10px;" onchange="checkDate('end')"> 
       </div>
       <input type="text" id="query-region-remark-input" placeholder="区域/备注" style="width: 80%; margin: 10px;">
+      <input type="text" id="v_class-input" placeholder="类别(拼音)" style="width: 80%; margin: 10px;">
       <button id="query-button" class="el-button el-button--primary" style="width: 30%; margin: 10px;">查询处理结果</button>
     </div>
   </div>
@@ -121,8 +122,7 @@
       
         for (var i = 0; i < fileInputs.length; i++) {
             var fileInput = fileInputs[i];
-            formData.append(`files[${i}]`, fileInput);
-            formData.append(`fileInput.name${i}`, fileInput.name)
+            formData.append('files', fileInput);
         }
     
         fetch('/submit_video', {
@@ -150,8 +150,9 @@
           var startDate = startDateInput.value.split("T")[0];
           var endDate = endDateInput.value.split("T")[0];
           var regionRemark = document.getElementById("query-region-remark-input").value;
+          var v_class = document.getElementById("v_class-input").value;
 
-          var queryParams = "?start_date=" + encodeURIComponent(startDate) + "&end_date=" + encodeURIComponent(endDate) + "&region_remark=" + encodeURIComponent(regionRemark);
+          var queryParams = "?start_date=" + encodeURIComponent(startDate) + "&end_date=" + encodeURIComponent(endDate) + "&region_remark=" + encodeURIComponent(regionRemark) + "&v_class=" + encodeURIComponent(v_class);
 
           fetch('/query_results' + queryParams, {
               method: 'GET'

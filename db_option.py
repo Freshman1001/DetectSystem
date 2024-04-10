@@ -126,11 +126,24 @@ def get_videos_by_date_range(start_date, end_date):
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
         return Video.query.filter(Video.v_time.between(start_date, end_date)).all()
 
-def get_videos_by_date_range_and_others(start_date, end_date,region_remark):
+def get_videos_by_date_range_and_region_remark(start_date, end_date,region_remark):
     with app.app_context():
         start_datetime = datetime.strptime(start_date, '%Y-%m-%d')
         end_datetime = datetime.strptime(end_date, '%Y-%m-%d')
         return Video.query.filter(Video.v_time.between(start_datetime, end_datetime),
+                                  or_(Video.v_region == region_remark, Video.description == region_remark)).all()
+
+def get_videos_by_date_range_and_v_class(start_date, end_date,v_class):
+    with app.app_context():
+        start_datetime = datetime.strptime(start_date, '%Y-%m-%d')
+        end_datetime = datetime.strptime(end_date, '%Y-%m-%d')
+        return Video.query.filter(Video.v_time.between(start_datetime, end_datetime), Video.v_class.ilike('%{}%'.format(v_class))).all()
+
+def get_videos_by_date_range_and_others(start_date, end_date,region_remark, v_class):
+    with app.app_context():
+        start_datetime = datetime.strptime(start_date, '%Y-%m-%d')
+        end_datetime = datetime.strptime(end_date, '%Y-%m-%d')
+        return Video.query.filter(Video.v_time.between(start_datetime, end_datetime), Video.v_class.ilike('%{}%'.format(v_class)),
                                   or_(Video.v_region == region_remark, Video.description == region_remark)).all()
 
 # 根据视频ID查询视频信息

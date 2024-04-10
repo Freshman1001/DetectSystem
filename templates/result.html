@@ -69,6 +69,7 @@
                     <div class="video-item">
                         <video controls>
                             <source src="{{ video.v_path }}" type="video/mp4">
+                            console.log(src)
                         </video>
                         <div class="video-info">
                             <p><strong>分类：</strong> {{ video.v_class }}</p>
@@ -92,8 +93,9 @@
         var startDate = document.getElementById("start-date-input").value.split("T")[0];
         var endDate = document.getElementById("end-date-input").value.split("T")[0];
         var locationRemark = document.getElementById("query-location-remark-input").value;
+        var v_class = document.getElementById("v_class-input").value;
 
-        var queryParams = "?start_date=" + encodeURIComponent(startDate) + "&end_date=" + encodeURIComponent(endDate) + "&location_remark=" + encodeURIComponent(locationRemark);
+        var queryParams = "?start_date=" + encodeURIComponent(startDate) + "&end_date=" + encodeURIComponent(endDate) + "&region_remark=" + encodeURIComponent(regionRemark) + "&v_class=" + encodeURIComponent(v_class);
 
         fetch('/query_results' + queryParams, {
             method: 'GET'
