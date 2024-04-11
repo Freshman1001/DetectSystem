@@ -1,0 +1,278 @@
+<!--
+  本网页内容受版权保护。
+  版权所有 (C) 2024 陈德宏/四川大学。
+  未经授权，禁止复制或传播本网页内容。
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>核工业设备缺陷智慧检测系统</title>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .home-container {
+      text-align: center;
+      padding: 40px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .home-title {
+      font-size: 36px;
+      font-weight: bold;
+      color: #0063B1;
+      margin-bottom: 40px;
+    }
+
+    .upload-section {
+      width: 40%;
+      float: left;
+      padding: 20px;
+      border: 1px dashed #ccc;
+      text-align: center;
+      border-radius: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      transition: transform 0.3s ease;
+    }
+
+    .query-section {
+      width: 40%;
+      height: 100%;
+      float: right;
+      padding: 20px;
+      border: 1px dashed #ccc;
+      border-radius: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      transition: transform 0.3s ease;
+    }
+
+    .upload-section:hover,
+    .query-section:hover {
+      transform: scale(1.1);
+    }
+
+    input[type="file"], input[type="date"], input[type="text"], button {
+      width: 80%;
+      margin: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    input[type="file"], input[type="date"], input[type="text"] {
+      background-color: #f8f8f8;
+    }
+
+    button {
+      width: calc(100% - 40px);
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #999;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300%;
+      height: 300%;
+      background-color: rgba(255, 255, 255, 0.1);
+      transition: all 0.5s ease;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+    }
+
+    button:hover::before {
+      width: 0;
+      height: 0;
+    }
+
+    button span {
+      position: relative;
+      z-index: 1;
+    }
+
+    button:focus {
+      outline: none;
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    button:hover {
+      background-color: #004F93;
+    }
+
+    ::placeholder {
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+    
+    <div id="app" class="home-container">
+      <h1 class="home-title" style="color: #0063B1;">核工业设备缺陷智慧检测系统</h1>
+      <div class="upload-section">
+        <input type="file" id="file-input" multiple style="display: none;">
+        <button id="upload-button" class="el-button el-button--default" style="width: 80%; margin: 10px;">点击批量上传文件</button>
+        <input type="date" id="date-input" placeholder="选择日期和时间" style="width: 80%; margin: 10px;" onchange="checkDate1()">
+        <input type="text" id="region-input" placeholder="区域" style="width: 80%; margin: 10px;">
+        <input type="text" id="remark-input" placeholder="备注" style="width: 80%; margin: 10px;">
+        <button id="submit-button" class="el-button el-button--default" style="width: 30%; margin: 10px;">提交</button>
+      </div>
+  
+      <div class="query-section">
+        <div>
+          查询开始日期：<input type="date" id="start-date-input" placeholder="开始日期" style="width: 50%; margin: 10px;" onchange="checkDate('start')">
+        </div>
+        <div>
+          查询结束日期：<input type="date" id="end-date-input" placeholder="结束日期" style="width: 50%; margin: 10px;" onchange="checkDate('end')"> 
+        </div>
+        <input type="text" id="query-region-remark-input" placeholder="区域/备注" style="width: 80%; margin: 10px;">
+        <input type="text" id="v_class-input" placeholder="类别(拼音)" style="width: 80%; margin: 10px;">
+        <button id="query-button" class="el-button el-button--default" style="width: 30%; margin: 10px;">查询处理结果</button>
+      </div>
+    </div>
+
+  
+
+  <script>
+    function checkDate1() {
+      var selectedDate = document.getElementById("date-input").value;
+      var currentDate = new Date().toISOString().slice(0, 16);
+      if (selectedDate > currentDate) {
+          alert("请选择当前时间或以前的时间！");
+          document.getElementById("date-input").value = "";
+      }
+    }
+
+
+
+    function checkDate(type) {
+      var selectedDate;
+      if (type === 'start') {
+          selectedDate = document.getElementById("start-date-input").value;
+      } else {
+          selectedDate = document.getElementById("end-date-input").value;
+      }
+      var currentDate = new Date().toISOString().slice(0, 10);
+  
+      if (selectedDate > currentDate) {
+          alert("请选择当前日期或以前的日期！");
+          if (type === 'start') {
+              document.getElementById("start-date-input").value = "";
+          } else {
+              document.getElementById("end-date-input").value = "";
+          }
+      }
+    }
+  
+  
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById("upload-button").addEventListener("click", function() {
+        document.getElementById("file-input").click();
+      });
+
+      document.getElementById("file-input").addEventListener("change", function() {
+        alert('文件已提交');
+      });
+  
+      document.getElementById("submit-button").addEventListener("click", function() {
+        var date = document.getElementById("date-input").value;
+        var region = document.getElementById("region-input").value;
+        var remark = document.getElementById("remark-input").value;
+        var fileInputs = document.getElementById("file-input").files;
+        var formData = new FormData();
+
+        if (!date || !region || !remark || fileInputs.length === 0) {
+            alert('文件和时间是必填项');
+            return;
+        }
+    
+        formData.append('date', date);
+        formData.append('region', region);
+        formData.append('remark', remark);
+      
+        for (var i = 0; i < fileInputs.length; i++) {
+            var fileInput = fileInputs[i];
+            formData.append('files', fileInput);
+        }
+    
+        fetch('/submit_video', {
+            method: 'POST',
+            body: formData,
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            console.log(data)
+            if (data.success) {
+                alert('提交成功');
+            } else {
+                alert('提交操作完成');
+            }
+        }).catch(function(error) {
+            console.error('Error:', error);
+        });
+    });
+    
+    
+
+      document.getElementById("query-button").addEventListener("click", function() {
+          var startDateInput = document.getElementById("start-date-input");
+          var endDateInput = document.getElementById("end-date-input");
+          var startDate = startDateInput.value.split("T")[0];
+          var endDate = endDateInput.value.split("T")[0];
+          var regionRemark = document.getElementById("query-region-remark-input").value;
+          var v_class = document.getElementById("v_class-input").value;
+          
+          if (!startDate || !endDate || !regionRemark || !v_class) {
+            alert('请填写完整信息');
+            return;
+          }
+
+          var queryParams = "?start_date=" + encodeURIComponent(startDate) + "&end_date=" + encodeURIComponent(endDate) + "&region_remark=" + encodeURIComponent(regionRemark) + "&v_class=" + encodeURIComponent(v_class);
+
+          fetch('/query_results' + queryParams, {
+              method: 'GET'
+          })
+          .then(function(response) {
+              if (response.ok) {
+                  window.location.href = '/query_results' + queryParams;
+              } else {
+                  console.error('Error:', response.statusText);
+                  alert('查询处理结果失败');
+              }
+          })
+          .catch(function(error) {
+              console.error('Error:', error);
+              alert('查询处理结果失败');
+          });
+      });
+
+
+    });
+  </script>
+</body>
+</html>
+
