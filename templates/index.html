@@ -15,6 +15,15 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
   <script src="https://unpkg.com/element-ui/lib/index.js"></script>
   <style>
+    iframe { 
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      z-index: -1;
+    }
+
     .home-container {
       text-align: center;
       padding: 40px;
@@ -44,29 +53,32 @@
   </style>
 </head>
 <body>
-  <div id="app" class="home-container">
-    <h1 class="home-title">核工业设备缺陷智慧检测系统</h1>
-    <div class="upload-section">
-      <input type="file" id="file-input" multiple style="display: none;">
-      <button id="upload-button" class="el-button el-button--primary" style="width: 80%; margin: 10px;">点击批量上传文件</button>
-      <input type="date" id="date-input" placeholder="选择日期和时间" style="width: 80%; margin: 10px;" onchange="checkDate1()">
-      <input type="text" id="region-input" placeholder="区域" style="width: 80%; margin: 10px;">
-      <input type="text" id="remark-input" placeholder="备注" style="width: 80%; margin: 10px;">
-      <button id="submit-button" class="el-button el-button--primary" style="width: 30%; margin: 10px;">提交</button>
+    
+    <div id="app" class="home-container">
+      <h1 class="home-title">核工业设备缺陷智慧检测系统</h1>
+      <div class="upload-section">
+        <input type="file" id="file-input" multiple style="display: none;">
+        <button id="upload-button" class="el-button el-button--primary" style="width: 80%; margin: 10px;">点击批量上传文件</button>
+        <input type="date" id="date-input" placeholder="选择日期和时间" style="width: 80%; margin: 10px;" onchange="checkDate1()">
+        <input type="text" id="region-input" placeholder="区域" style="width: 80%; margin: 10px;">
+        <input type="text" id="remark-input" placeholder="备注" style="width: 80%; margin: 10px;">
+        <button id="submit-button" class="el-button el-button--primary" style="width: 30%; margin: 10px;">提交</button>
+      </div>
+  
+      <div class="query-section">
+        <div>
+          查询开始日期：<input type="date" id="start-date-input" placeholder="开始日期" style="width: 50%; margin: 10px;" onchange="checkDate('start')">
+        </div>
+        <div>
+          查询结束日期：<input type="date" id="end-date-input" placeholder="结束日期" style="width: 50%; margin: 10px;" onchange="checkDate('end')"> 
+        </div>
+        <input type="text" id="query-region-remark-input" placeholder="区域/备注" style="width: 80%; margin: 10px;">
+        <input type="text" id="v_class-input" placeholder="类别(拼音)" style="width: 80%; margin: 10px;">
+        <button id="query-button" class="el-button el-button--primary" style="width: 30%; margin: 10px;">查询处理结果</button>
+      </div>
     </div>
 
-    <div class="query-section">
-      <div>
-        查询开始日期：<input type="date" id="start-date-input" placeholder="开始日期" style="width: 50%; margin: 10px;" onchange="checkDate('start')">
-      </div>
-      <div>
-        查询结束日期：<input type="date" id="end-date-input" placeholder="结束日期" style="width: 50%; margin: 10px;" onchange="checkDate('end')"> 
-      </div>
-      <input type="text" id="query-region-remark-input" placeholder="区域/备注" style="width: 80%; margin: 10px;">
-      <input type="text" id="v_class-input" placeholder="类别(拼音)" style="width: 80%; margin: 10px;">
-      <button id="query-button" class="el-button el-button--primary" style="width: 30%; margin: 10px;">查询处理结果</button>
-    </div>
-  </div>
+  
 
   <script>
     function checkDate1() {
